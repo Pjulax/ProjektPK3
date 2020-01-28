@@ -1,10 +1,8 @@
 #include "GraphicalObject.h"
 
-GraphicalObject::GraphicalObject(int XL, int XR, int YU, int YD, ObjectType _ID)
+GraphicalObject::GraphicalObject(float x, float y, ObjectType _ID, const sf::Texture* _texture)
 {
-	coordinates[0] = XL;
-	coordinates[1] = XR;
-	coordinates[2] = YU;
-	coordinates[3] = YD;
+	setPosition(x, y);
 	ID = _ID;
+	setTexture(_texture);
 }

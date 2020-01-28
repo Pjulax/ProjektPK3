@@ -1,13 +1,14 @@
 #pragma once
-enum ObjectType {Car, PrivilegedCar, Crossing, Road, Building};
+#include <SFML/Graphics.hpp>
 
-class GraphicalObject
+enum class ObjectType {UNIDENTIFIED, CAR, PRILIVEGEDCAR, CROSSING, ROAD, BUILDING};
+
+class GraphicalObject :
+	public sf::RectangleShape
 {
 private:
-	int coordinates[4];
 	ObjectType ID;
-	// SFML TEXTURE
+	
 public:
-	GraphicalObject(int XL, int XR, int YU, int YD, ObjectType _ID);
+	GraphicalObject(float x, float y, ObjectType _ID, const sf::Texture* _texture);
 };
-
