@@ -1,18 +1,16 @@
 #pragma once
 #include "GraphicalObject.h"
-#include "Crossing.h"
-#include "Road.h"
+#include "ImmovableObject.h"
 
 class MovableObject :
 	public GraphicalObject
 {
 private:
-	ImmovableObject* actualFloor;
 	int speed;
 protected:
 
 public:
-	MovableObject(int XL, int XR, int YU, int YD, ObjectType _ID, sf::Texture _texture);
+	MovableObject(float x, float y, ObjectType _ID, sf::Texture* _texture);
 	bool isMapEnd(int winSizeX, int winSizeY);
 	virtual void move() = 0;
 	virtual bool onCrossing() = 0;
