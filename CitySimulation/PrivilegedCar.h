@@ -5,7 +5,7 @@ class PrivilegedCar :
 	public Car
 {
 public:
-	PrivilegedCar(int XL, int XR, int YU, int YD, ObjectType _ID, sf::Texture _texture);
-	void move(int speed);
+	PrivilegedCar(float x, float y, float sizeX, float sizeY, ObjectType _ID, sf::Texture* _texture);
+	void moveObj(int speed);
 };
 

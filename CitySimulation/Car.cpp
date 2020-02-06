@@ -1,12 +1,19 @@
 #include "Car.h"
-Car::Car(float x, float y, ObjectType _ID, sf::Texture* _texture) :
-    MovableObject(x,y,_ID, _texture)
+#include <cmath>
+Car::Car(float x, float y, float sizeX, float sizeY, sf::Texture* _texture) :
+    MovableObject(x, y, sizeX, sizeY, ObjectType::CAR, _texture)
 {
 }
 
-void Car::move()
+void Car::moveObj()
 {
+	//if (dir == 0 && angle == 0) {
+	//	this->move(sf::Vector2f(speed * timeDelayed,0.0f);
+	//}
+	//else if (dir == 1 && angle == 0) {
 
+	//	this->move(sf::Vector2f(std::cos() * timeDelayed, std::sin();
+	//}
 }
 //bool Car::isMapEnd(int winSizeX, int winSizeY)
 //{

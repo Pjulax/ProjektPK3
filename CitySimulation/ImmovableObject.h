@@ -9,7 +9,7 @@ class ImmovableObject :
 private:
 	std::vector<GraphicalObject*> CarsContaining;
 public:
-	ImmovableObject(float x, float y, ObjectType _ID, sf::Texture* _texture);
+	ImmovableObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, sf::Texture* _texture);
 
 	virtual bool HasThisCar(GraphicalObject* queriedCar) = 0;
 	virtual bool AddCar(GraphicalObject* Car) = 0;

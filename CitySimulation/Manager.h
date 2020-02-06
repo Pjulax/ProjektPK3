@@ -19,11 +19,13 @@ private:
 	std::vector<ImmovableObject*> Roads;
 	std::vector<ImmovableObject*> Buildings;
 	std::vector<ImmovableObject*> Crossings;
+	int xCrossAmount = -1;
+	int yCrossAmount = -1;
 	bool checkCollision(); // checks collision on coordinates
-
+	bool generateMap();
 public:
 	Manager();
-	Manager(std::vector<GraphicalObject*> _Cars, std::vector<GraphicalObject*> _Roads, std::vector<GraphicalObject*> _Buildings, std::vector<GraphicalObject*> _Crossings);
+	Manager(int _xCrossAmount, int _yCrossAmount);
 	int RunApplication();
 	bool moveCars(); // moves cars with conditions for crossing, privilege, collision
 

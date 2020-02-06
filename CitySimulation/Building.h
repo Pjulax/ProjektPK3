@@ -5,6 +5,8 @@ class Building :
 	public ImmovableObject
 {
 public:
-	Building(int XL, int XR, int YU, int YD, ObjectType _ID, sf::Texture _texture);
-};
+	Building(float x, float y, sf::Texture* _texture);
+		bool HasThisCar(GraphicalObject* queriedCar);
+		bool AddCar(GraphicalObject* Car);
+	};
 

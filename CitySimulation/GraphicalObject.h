@@ -10,5 +10,5 @@ private:
 	ObjectType ID;
 	
 public:
-	GraphicalObject(float x, float y, ObjectType _ID, const sf::Texture* _texture);
+	GraphicalObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, const sf::Texture* _texture);
 };

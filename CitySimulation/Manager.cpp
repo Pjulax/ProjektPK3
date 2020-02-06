@@ -1,16 +1,36 @@
 #include "Manager.h"
 
+Manager::Manager()
+{
+}
+
+Manager::Manager(int _xCrossAmount, int _yCrossAmount)
+{
+	this->xCrossAmount = _xCrossAmount;
+	this->yCrossAmount = _yCrossAmount;
+}
+
 bool Manager::checkCollision()
 {
 	return false;
 }
 
-Manager::Manager()
+bool Manager::generateMap()
 {
-}
-
-Manager::Manager(std::vector<GraphicalObject*> _Cars, std::vector<GraphicalObject*> _Roads, std::vector<GraphicalObject*> _Buildings, std::vector<GraphicalObject*> _Crossings)
-{
+	sf::Vector2f makePoint(0.0, 0.0);
+//buildings generate;
+	
+	for (int i = 0; i <= this->xCrossAmount; i++) {
+		for (int j = 0; j <= this->yCrossAmount; j++) {
+			sf::Texture buildingTexture;
+			buildingTexture.loadFromFile("Building.png", sf::IntRect(0, 0, 128, 128));
+			Buildings.push_back(new Building(makePoint.x, makePoint.y, sf::Texture()));
+			Buildings.back()->getTexture(&buildingTexture)
+			makePoint.y = makePoint.x + 128.f + 64.f;
+		}
+		makePoint.y = 0.f;
+		makePoint.x = makePoint.x + 128 + 64;
+	}
 }
 
 int Manager::RunApplication()
@@ -38,7 +58,9 @@ int Manager::RunApplication()
         window.clear(sf::Color::White);
 
         // draw everything here...
-
+		for (ImmovableObject* building : Buildings) {
+			window.draw(*building);
+		}
 
         // end the current frame
         window.display();
@@ -51,7 +73,7 @@ bool Manager::moveCars()
 {
     if (!Cars.empty()) {
         for (MovableObject* car : Cars) {
-            car->move();
+            car->moveObj();
             if (car->isMapEnd(800,600)) {
                 delete car;
                 car = nullptr;
