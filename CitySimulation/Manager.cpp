@@ -15,28 +15,110 @@ bool Manager::checkCollision()
 	return false;
 }
 
-bool Manager::generateMap()
+void Manager::generateMap()
 {
-	sf::Vector2f makePoint(0.0, 0.0);
-//buildings generate;
-	
-	for (int i = 0; i <= this->xCrossAmount; i++) {
-		for (int j = 0; j <= this->yCrossAmount; j++) {
-			sf::Texture buildingTexture;
-			buildingTexture.loadFromFile("Building.png", sf::IntRect(0, 0, 128, 128));
-			Buildings.push_back(new Building(makePoint.x, makePoint.y, sf::Texture()));
-			Buildings.back()->getTexture(&buildingTexture)
-			makePoint.y = makePoint.x + 128.f + 64.f;
-		}
-		makePoint.y = 0.f;
-		makePoint.x = makePoint.x + 128 + 64;
-	}
+    generateBuildings();
+    generateRoads();
+    generateCrossings();
+    generateCars();
+}
+
+void Manager::generateBuildings()
+{
+    sf::Vector2f makePoint(0.0, 0.0);
+    //buildings generation;
+
+    for (int i = 0; i <= this->xCrossAmount; i++) 
+    {
+        for (int j = 0; j <= this->yCrossAmount; j++) 
+        {
+            sf::Texture* buildingTexture = new sf::Texture();
+            buildingTexture->loadFromFile("Building.png", sf::IntRect(0, 0, 128, 128));
+            Buildings.push_back(new Building(makePoint.x, makePoint.y, buildingTexture));
+            makePoint.y = makePoint.y + 128.f + 64.f;
+        }
+        makePoint.y = 0.f;
+        makePoint.x = makePoint.x + 128 + 64;
+    }
+
+}
+
+void Manager::generateRoads()
+{   //roads generation;
+
+    //makes all roads from left to right
+    sf::Vector2f makePoint(0.0, 128.0);
+
+    for (int i = 0; i <= this->xCrossAmount; i++) 
+    {
+        for (int j = 0; j < this->yCrossAmount; j++) 
+        {
+            sf::Texture* roadTexture = new sf::Texture();
+            roadTexture->loadFromFile("RoadShort.png", sf::IntRect(0, 0, 128, 64));
+            Roads.push_back(new Road(makePoint.x, makePoint.y, roadTexture));
+            makePoint.y = makePoint.y + 128.f + 64.f;
+        }
+        makePoint.y = 128.f;
+        makePoint.x = makePoint.x + 128 + 64;
+    }
+
+    //makes all roads from up to down
+    makePoint.y = 0.f;
+    makePoint.x = 128.f + 64.f;
+
+
+    for (int i = 0; i < this->xCrossAmount; i++)
+    {
+        for (int j = 0; j <= this->yCrossAmount; j++)
+        {
+            sf::Texture* roadTexture = new sf::Texture();
+            roadTexture->loadFromFile("RoadShort.png", sf::IntRect(0, 0, 128, 64));
+            Roads.push_back(new Road(makePoint.x, makePoint.y, roadTexture));
+            Roads.back()->setRotation(90);
+            makePoint.y = makePoint.y + 128.f + 64.f;
+        }
+        makePoint.y = 0.f;
+        makePoint.x = makePoint.x + 128 + 64;
+    }
+}
+
+void Manager::generateCrossings()
+{
+    sf::Vector2f makePoint(128.0, 128.0);
+    //buildings generation;
+
+    for (int i = 0; i < this->xCrossAmount; i++)
+    {
+        for (int j = 0; j < this->yCrossAmount; j++)
+        {
+            sf::Texture* crossingTexture = new sf::Texture();
+            crossingTexture->loadFromFile("Crossing.png", sf::IntRect(0, 0, 128, 128));
+            Crossings.push_back(new Crossing(makePoint.x, makePoint.y, crossingTexture));
+            makePoint.y = makePoint.y + 128.f + 64.f;
+        }
+        makePoint.y = 128.f;
+        makePoint.x = makePoint.x + 128 + 64;
+    }
+
+
+}
+
+void Manager::generateCars()
+{
+
 }
 
 int Manager::RunApplication()
 {
-	// Window initializing
-	sf::RenderWindow window(sf::VideoMode(800, 600), "City Simulation");
+	// Map & Window size initializing
+    this->xCrossAmount = 5;
+    this->yCrossAmount = 4;
+    unsigned int windowXsize = this->xCrossAmount * (128 + 64) + 128,
+                 windowYsize = this->yCrossAmount * (128 + 64) + 128;
+    // Window initializing
+    sf::RenderWindow window(sf::VideoMode(windowXsize, windowYsize), "City Simulation");
+
+    generateMap();
 
     while (window.isOpen())
     {
@@ -58,14 +140,19 @@ int Manager::RunApplication()
         window.clear(sf::Color::White);
 
         // draw everything here...
-		for (ImmovableObject* building : Buildings) {
-			window.draw(*building);
-		}
-
+        for (ImmovableObject* building : Buildings) {
+            window.draw(*building);
+        }
+        for (ImmovableObject* road : Roads) {
+            window.draw(*road);
+        }
+        for (ImmovableObject* crossing : Crossings) {
+            window.draw(*crossing);
+        }
         // end the current frame
         window.display();
     }
-
+    this->Buildings.clear();
 	return 0;
 }
 

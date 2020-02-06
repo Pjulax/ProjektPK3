@@ -14,3 +14,6 @@ bool ImmovableObject::AddCar(GraphicalObject* Car)
 {
 	return false;
 }
+
+ImmovableObject::~ImmovableObject() {
+}

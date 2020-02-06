@@ -5,6 +5,9 @@ class Road :
 	public ImmovableObject
 {
 public:
-	Road(int XL, int XR, int YU, int YD, ObjectType _ID, sf::Texture _texture);
+	Road(float x, float y, sf::Texture* _texture);
+	~Road();
+	bool HasThisCar(GraphicalObject* queriedCar);
+	bool AddCar(GraphicalObject* Car);
 };
 

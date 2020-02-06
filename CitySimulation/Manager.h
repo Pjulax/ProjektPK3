@@ -22,7 +22,11 @@ private:
 	int xCrossAmount = -1;
 	int yCrossAmount = -1;
 	bool checkCollision(); // checks collision on coordinates
-	bool generateMap();
+	void generateMap();
+	void generateBuildings();
+	void generateRoads();
+	void generateCrossings();
+	void generateCars();
 public:
 	Manager();
 	Manager(int _xCrossAmount, int _yCrossAmount);

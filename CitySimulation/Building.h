@@ -6,7 +6,7 @@ class Building :
 {
 public:
 	Building(float x, float y, sf::Texture* _texture);
-		bool HasThisCar(GraphicalObject* queriedCar);
-		bool AddCar(GraphicalObject* Car);
+	~Building();
+	bool HasThisCar(GraphicalObject* queriedCar);
+	bool AddCar(GraphicalObject* Car);
 	};
-

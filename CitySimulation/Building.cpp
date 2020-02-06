@@ -5,6 +5,10 @@ Building::Building(float x, float y, sf::Texture* _texture) :
 {
 }
 
+Building::~Building()
+{
+}
+
 bool Building::HasThisCar(GraphicalObject* queriedCar)
 {
 	return false;

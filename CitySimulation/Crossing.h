@@ -5,6 +5,9 @@ class Crossing :
 	public ImmovableObject
 {
 public:
-	Crossing(int XL, int XR, int YU, int YD, ObjectType _ID, sf::Texture _texture);
+	Crossing(float x, float y, sf::Texture* _texture);
+	~Crossing();
+	bool HasThisCar(GraphicalObject* queriedCar);
+	bool AddCar(GraphicalObject* Car);
 };
 

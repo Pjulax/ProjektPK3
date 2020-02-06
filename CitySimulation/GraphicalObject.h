@@ -8,7 +8,8 @@ class GraphicalObject :
 {
 private:
 	ObjectType ID;
-	
+	sf::Texture* usedTexture;
 public:
-	GraphicalObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, const sf::Texture* _texture);
+	GraphicalObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, sf::Texture* _texture);
+	~GraphicalObject();
 };
