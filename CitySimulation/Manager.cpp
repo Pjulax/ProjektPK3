@@ -136,10 +136,13 @@ int Manager::RunApplication()
             //OBS£UGA ESCAPE
         }
 
+        // Cars movement logic function
+
+
         // clear the window with white color
         window.clear(sf::Color::White);
 
-        // draw everything here...
+        // Map Drawing
         for (ImmovableObject* building : Buildings) {
             window.draw(*building);
         }
@@ -149,10 +152,18 @@ int Manager::RunApplication()
         for (ImmovableObject* crossing : Crossings) {
             window.draw(*crossing);
         }
+        // Cars drawing
+
+
+
         // end the current frame
         window.display();
     }
+    // Clearing vectors -> memory erasing
     this->Buildings.clear();
+    this->Roads.clear();
+    this->Crossings.clear();
+    this->Cars.clear();
 	return 0;
 }
 
@@ -160,13 +171,20 @@ bool Manager::moveCars()
 {
     if (!Cars.empty()) {
         for (MovableObject* car : Cars) {
-            car->moveObj();
             if (car->isMapEnd(800,600)) {
                 delete car;
                 car = nullptr;
             }
-            if (car->onCrossing()) {
-                car->directionGenerate();
+            else if (car->onCrossing()) {
+//                if (car->direction == -1) {
+//                    car->directionGenerate();
+//                }
+//              else if(car->crossingQueueCheck()){    <- sprawdza czy ju¿ mo¿e jechaæ
+//                      car->moveObj();
+//               }
+            }
+            else {
+                car->moveObj();
             }
         }
         std::remove(Cars.begin(), Cars.end(), nullptr);

@@ -5,6 +5,10 @@ Car::Car(float x, float y, float sizeX, float sizeY, sf::Texture* _texture) :
 {
 }
 
+Car::~Car() 
+{
+}
+
 void Car::moveObj()
 {
 	//if (dir == 0 && angle == 0) {
@@ -28,4 +32,13 @@ bool Car::onCrossing()
 int Car::directionGenerate()
 {
     return 0;
+}
+
+bool Car::isMapEnd(int winSizeX, int winSizeY)
+{
+	if (this->getPosition().x == 0 || this->getPosition().x == winSizeX
+		|| this->getPosition().y == 0 || this->getPosition().y == winSizeY)
+		return true;
+	else
+		return false;
 }

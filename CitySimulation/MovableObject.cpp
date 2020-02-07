@@ -5,11 +5,3 @@ MovableObject::MovableObject(float x, float y, float sizeX, float sizeY, ObjectT
 {
 }
 
-bool MovableObject::isMapEnd(int winSizeX, int winSizeY)
-{
-	if (this->getPosition().x == 0 || this->getPosition().x == winSizeX
-		|| this->getPosition().y == 0 || this->getPosition().y == winSizeY)
-		return true;
-	else
-		return false;
-}

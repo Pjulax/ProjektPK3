@@ -8,8 +8,10 @@ private:
 
 public:
 	Car(float x, float y, float sizeX, float sizeY, sf::Texture* _texture);
-	virtual void moveObj();
-	//bool isMapEnd(int winSizeX, int winSizeY);
+	~Car();
+	bool isMapEnd(int winSizeX, int winSizeY);
+	void moveObj();
+	bool isMapEnd(int winSizeX, int winSizeY);
 	bool onCrossing();
 	int directionGenerate();
 
