@@ -5,15 +5,6 @@ ImmovableObject::ImmovableObject(float x, float y, float sizeX, float sizeY, Obj
 {
 }
 
-bool ImmovableObject::HasThisCar(GraphicalObject* queriedCar)
-{
-	return false;
-}
-
-bool ImmovableObject::AddCar(GraphicalObject* Car)
-{
-	return false;
-}
-
 ImmovableObject::~ImmovableObject() {
 }
+

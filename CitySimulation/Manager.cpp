@@ -110,21 +110,22 @@ bool Manager::moveCars(int winXsize, int winYsize)
     bool anythingMoves = false;
     if (!Cars.empty()) {
         for (MovableObject* car : Cars) {
-        if (!car->isMapEnd(winXsize, winYsize)) {
-            car->moveObj();
-            anythingMoves = true;
-        }
-        else if (car->onCrossing()) {
-//                if (car->direction == -1) {
-//                    car->directionGenerate();
-//                }
-//              else if(car->crossingQueueCheck()){    <- sprawdza czy ju¿ mo¿e jechaæ
-//                      car->moveObj();
-//               }
-        }
-        else {
+            if (!car->isMapEnd(winXsize, winYsize)) {
+                
+                anythingMoves = true;
 
-        }
+                if (car->onCrossing()) {
+                //                if (car->direction == -1) {
+                //                    car->directionGenerate();
+                //                }
+                //              else if(car->crossingQueueCheck()){    <- sprawdza czy ju¿ mo¿e jechaæ
+                //                      car->moveObj();
+                //               }
+                }
+                else {
+                    car->moveObj();
+                }
+            }
         }
     }
     
@@ -143,6 +144,7 @@ void Manager::generateMap()
     generateRoads();
     generateCrossings();
     generateCars();
+    linkingRoads();
 }
 
 void Manager::generateBuildings()
@@ -244,25 +246,62 @@ void Manager::generateCars() // File loaded cars handling remaining!
             int oppositeDir = rand() % 2;
 
             if (road->getRotation() == 0 && oppositeDir == 0) { // rotation = 0
-                makePoint.x = road->getPosition().x + 64;
-                makePoint.y = road->getPosition().y + 48;
-            }
-            else if (road->getRotation() == 0 && oppositeDir == 1) { // rotation = 180
-                makePoint.x = road->getPosition().x + 64;
+                makePoint.x = road->getPosition().x;
                 makePoint.y = road->getPosition().y + 16;
             }
+            else if (road->getRotation() == 0 && oppositeDir == 1) { // rotation = 180
+                makePoint.x = road->getPosition().x;
+                makePoint.y = road->getPosition().y - 16;
+            }
             else if (road->getRotation() == 90 && oppositeDir == 0) { // rotation = 90
-                makePoint.x = road->getPosition().x - 48;
-                makePoint.y = road->getPosition().y + 64;
+                makePoint.x = road->getPosition().x - 16;
+                makePoint.y = road->getPosition().y;
             }
             else if (road->getRotation() == 90 && oppositeDir == 1) { // rotation = 270
-                makePoint.x = road->getPosition().x - 16;
-                makePoint.y = road->getPosition().y + 64;
+                makePoint.x = road->getPosition().x + 16;
+                makePoint.y = road->getPosition().y;
             }
 
             Cars.push_back(new Car(makePoint.x, makePoint.y, carTexture));
             Cars.back()->setRotation(road->getRotation() + (oppositeDir * 180));
             Cars.back()->setOrigin(16.0f, 8.0f);
+        }
+    }
+}
+
+void Manager::linkingRoads()
+{
+    sf::Vector2f roadCenter(0.0f,0.0f);
+
+    for (ImmovableObject* road : Roads) {
+        roadCenter.x = road->getPosition().x;
+        roadCenter.y = road->getPosition().y;
+        
+        for (ImmovableObject* crossing : Crossings) {
+            if (roadCenter.y == crossing->getPosition().y) {
+                if (crossing->getPosition().x - roadCenter.x == 96) {
+                    road->setNext(crossing);
+                    crossing->setLeft(road);
+                    std::cout << "Road saves right crossing" << std::endl;
+                }
+                else if (roadCenter.x - crossing->getPosition().x == 96) {
+                    road->setPrev(crossing);
+                    crossing->setRight(road);
+                    std::cout << "Road saves left crossing" << std::endl;
+                }
+            }
+            else if (roadCenter.x == crossing->getPosition().x) {
+                if (crossing->getPosition().y - roadCenter.y == 96) {
+                    road->setNext(crossing);
+                    crossing->setUpper(road);
+                    std::cout << "Road saves lower crossing" << std::endl;
+                }
+                else if (roadCenter.y - crossing->getPosition().y == 96) {
+                    road->setPrev(crossing);
+                    crossing->setLower(road);
+                    std::cout << "Road saves upper crossing" << std::endl;
+                }
+            }
         }
     }
 }

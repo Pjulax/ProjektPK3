@@ -12,3 +12,8 @@ GraphicalObject::GraphicalObject(float x, float y, float sizeX, float sizeY, Obj
 GraphicalObject::~GraphicalObject() {
 	this->usedTexture->~Texture();
 }
+
+ObjectType GraphicalObject::getID()
+{
+	return ID;
+}

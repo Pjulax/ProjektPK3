@@ -9,7 +9,7 @@ class GraphicalObject :
 public:
 	GraphicalObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, sf::Texture* _texture);
 	~GraphicalObject();
-
+	ObjectType getID();
 private:
 	ObjectType ID;
 	sf::Texture* usedTexture;
