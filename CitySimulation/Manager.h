@@ -37,5 +37,4 @@ private:
 	void generateRoads();
 	void generateCrossings();
 	void generateCars();
-	void setOriginsCenter();
 };

@@ -32,10 +32,6 @@ void Car::moveObj()
 	//	this->move(sf::Vector2f(std::cos() * timeDelayed, std::sin();
 	//}
 }
-//bool Car::isMapEnd(int winSizeX, int winSizeY)
-//{
-//    return false;
-//}
 
 bool Car::onCrossing()
 {
@@ -49,8 +45,8 @@ int Car::directionGenerate()
 
 bool Car::isMapEnd(int winSizeX, int winSizeY)
 {
-	if (this->getPosition().x == 0 || this->getPosition().x == winSizeX
-		|| this->getPosition().y == 0 || this->getPosition().y == winSizeY)
+	if (this->getPosition().x == -16 || this->getPosition().x == winSizeX + 16
+		|| this->getPosition().y == -16 || this->getPosition().y == winSizeY + 16)
 		return true;
 	else
 		return false;

@@ -143,7 +143,6 @@ void Manager::generateMap()
     generateRoads();
     generateCrossings();
     generateCars();
-    setOriginsCenter();
 }
 
 void Manager::generateBuildings()
@@ -170,7 +169,7 @@ void Manager::generateRoads()
 {   //roads generation;
 
     //makes all roads from left to right
-    sf::Vector2f makePoint(0.0, 128.0);
+    sf::Vector2f makePoint(64.0, 160.0);
 
     for (int i = 0; i <= this->xCrossAmount; i++)
     {
@@ -179,15 +178,16 @@ void Manager::generateRoads()
             sf::Texture* roadTexture = new sf::Texture();
             roadTexture->loadFromFile("Road.png", sf::IntRect(0, 0, 128, 64));
             Roads.push_back(new Road(makePoint.x, makePoint.y, roadTexture));
+            Roads.back()->setOrigin(64.0f, 32.0f);
             makePoint.y = makePoint.y + 128.f + 64.f;
         }
-        makePoint.y = 128.f;
+        makePoint.y = 160.f;
         makePoint.x = makePoint.x + 128 + 64;
     }
 
     //makes all roads from up to down
-    makePoint.y = 0.f;
-    makePoint.x = 128.f + 64.f;
+    makePoint.y = 64.f;
+    makePoint.x = 160.f;
 
 
     for (int i = 0; i < this->xCrossAmount; i++)
@@ -198,16 +198,17 @@ void Manager::generateRoads()
             roadTexture->loadFromFile("Road.png", sf::IntRect(0, 0, 128, 64));
             Roads.push_back(new Road(makePoint.x, makePoint.y, roadTexture));
             Roads.back()->setRotation(90);
+            Roads.back()->setOrigin(64.0f, 32.0f);
             makePoint.y = makePoint.y + 128.f + 64.f;
         }
-        makePoint.y = 0.f;
+        makePoint.y = 64.f;
         makePoint.x = makePoint.x + 128 + 64;
     }
 }
 
 void Manager::generateCrossings()
 {
-    sf::Vector2f makePoint(128.0, 128.0);
+    sf::Vector2f makePoint(160.0, 160.0);
     //buildings generation;
 
     for (int i = 0; i < this->xCrossAmount; i++)
@@ -215,11 +216,12 @@ void Manager::generateCrossings()
         for (int j = 0; j < this->yCrossAmount; j++)
         {
             sf::Texture* crossingTexture = new sf::Texture();
-            crossingTexture->loadFromFile("Crossing.png", sf::IntRect(0, 0, 128, 128));
+            crossingTexture->loadFromFile("Crossing.png", sf::IntRect(0, 0, 64, 64));
             Crossings.push_back(new Crossing(makePoint.x, makePoint.y, crossingTexture));
+            Crossings.back()->setOrigin(32.0f, 32.0f);
             makePoint.y = makePoint.y + 128.f + 64.f;
         }
-        makePoint.y = 128.f;
+        makePoint.y = 160.f;
         makePoint.x = makePoint.x + 128 + 64;
     }
 
@@ -240,59 +242,27 @@ void Manager::generateCars() // File loaded cars handling remaining!
             sf::Texture* carTexture = new sf::Texture();
             carTexture->loadFromFile("RedCar.png", sf::IntRect(0, 0, 32, 16));
             int oppositeDir = rand() % 2;
-            if (road->getRotation() == 0 && oppositeDir == 0) {
+
+            if (road->getRotation() == 0 && oppositeDir == 0) { // rotation = 0
                 makePoint.x = road->getPosition().x + 64;
-                makePoint.y = road->getPosition().y + 40;
+                makePoint.y = road->getPosition().y + 48;
             }
-            else if (road->getRotation() == 0 && oppositeDir == 1) {
+            else if (road->getRotation() == 0 && oppositeDir == 1) { // rotation = 180
                 makePoint.x = road->getPosition().x + 64;
-                makePoint.y = road->getPosition().y + 24;
+                makePoint.y = road->getPosition().y + 16;
             }
-            else if (road->getRotation() == 90 && oppositeDir == 0) {
-                makePoint.x = road->getPosition().x - 40;
+            else if (road->getRotation() == 90 && oppositeDir == 0) { // rotation = 90
+                makePoint.x = road->getPosition().x - 48;
                 makePoint.y = road->getPosition().y + 64;
             }
-            else if (road->getRotation() == 90 && oppositeDir == 1) {
-                makePoint.x = road->getPosition().x - 24;
+            else if (road->getRotation() == 90 && oppositeDir == 1) { // rotation = 270
+                makePoint.x = road->getPosition().x - 16;
                 makePoint.y = road->getPosition().y + 64;
             }
+
             Cars.push_back(new Car(makePoint.x, makePoint.y, carTexture));
             Cars.back()->setRotation(road->getRotation() + (oppositeDir * 180));
+            Cars.back()->setOrigin(16.0f, 8.0f);
         }
-    }
-}
-
-void Manager::setOriginsCenter()
-{
-    for (ImmovableObject* crossing : Crossings) {
-        crossing->setOrigin(32.0f,32.0f);
-        
-    }
-    for (ImmovableObject* road : Roads) {
-
-    }
-    for (MovableObject* car : Cars) {
-        sf::Vector2f newPosition;
-        if (car->getRotation() == 0) {
-            car->setOrigin(16.0f, 8.0f);
-            newPosition.x = car->getPosition().x + 16;
-            newPosition.y = car->getPosition().y + 8;
-        }
-        else if (car->getRotation() == 90) {
-            car->setOrigin(-8.0f, 16.0f);
-            newPosition.x = car->getPosition().x - 8;
-            newPosition.y = car->getPosition().y + 16;
-        }
-        else if (car->getRotation() == 180) {
-            car->setOrigin(-16.0f, -8.0f);
-            newPosition.x = car->getPosition().x - 16;
-            newPosition.y = car->getPosition().y - 8;
-        }
-        else if (car->getRotation() == 270) {
-            car->setOrigin(8.0f, -16.0f);
-            newPosition.x = car->getPosition().x + 8;
-            newPosition.y = car->getPosition().y - 16;
-        }
-        car->rotate(1);
     }
 }
