@@ -6,10 +6,11 @@ enum class ObjectType {UNIDENTIFIED, CAR, PRILIVEGEDCAR, CROSSING, ROAD, BUILDIN
 class GraphicalObject :
 	public sf::RectangleShape
 {
-private:
-	ObjectType ID;
-	sf::Texture* usedTexture;
 public:
 	GraphicalObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, sf::Texture* _texture);
 	~GraphicalObject();
+
+private:
+	ObjectType ID;
+	sf::Texture* usedTexture;
 };

@@ -7,6 +7,7 @@ class MovableObject :
 {
 public:
 	MovableObject(float x, float y, float sizeX, float sizeY, ObjectType _ID, sf::Texture* _texture);
+	~MovableObject();
 	virtual bool isMapEnd(int winSizeX, int winSizeY) = 0;
 	virtual void moveObj() = 0;
 	virtual bool onCrossing() = 0;

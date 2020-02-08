@@ -9,5 +9,9 @@ public:
 	~Crossing();
 	bool HasThisCar(GraphicalObject* queriedCar);
 	bool AddCar(GraphicalObject* Car);
+
+private:
+	ImmovableObject* next = nullptr;
+	ImmovableObject* prev = nullptr;
 };
 

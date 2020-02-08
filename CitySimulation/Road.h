@@ -9,5 +9,10 @@ public:
 	~Road();
 	bool HasThisCar(GraphicalObject* queriedCar);
 	bool AddCar(GraphicalObject* Car);
+
+private:
+	ImmovableObject* next;
+	ImmovableObject* prev;
+
 };
 

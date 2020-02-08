@@ -5,3 +5,7 @@ MovableObject::MovableObject(float x, float y, float sizeX, float sizeY, ObjectT
 {
 }
 
+MovableObject::~MovableObject()
+{
+}
+

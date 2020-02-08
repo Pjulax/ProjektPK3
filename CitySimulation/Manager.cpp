@@ -10,9 +10,131 @@ Manager::Manager(int _xCrossAmount, int _yCrossAmount)
 	this->yCrossAmount = _yCrossAmount;
 }
 
+void Manager::RunApplication()
+{
+    // FILE LOADING - if exists!
+
+	// Map & Window size initializing
+    this->xCrossAmount = 2;
+    this->yCrossAmount = 2;
+    unsigned int windowXsize = this->xCrossAmount * (128 + 64) + 128,
+                 windowYsize = this->yCrossAmount * (128 + 64) + 128;
+    // Window initializing
+    sf::RenderWindow window(sf::VideoMode(windowXsize, windowYsize), "City Simulation");
+    window.setFramerateLimit(60);
+
+    generateMap();
+
+    while (window.isOpen())
+    {
+       
+        // check all the window's events that were triggered since the last iteration of the loop
+        sf::Event event;
+
+        
+        while (window.pollEvent(event))
+        {
+            // "close requested" event: we close the window
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                throw(1);
+            }
+            //OBS£UGA ESCAPE
+        }
+
+        // Cars movement logic function
+        
+
+        //TIME HANDLING
+
+        //sf::Clock clock;
+        //sf::Time time = clock.getElapsedTime();
+        //if (time.asMilliseconds() > 200) {
+        //    clock.restart();
+        //}
+
+
+        if (moveCars(windowXsize, windowYsize)) {
+
+            // clear the window with white color
+            window.clear(sf::Color::White);
+
+
+            // Map Drawing
+            for (ImmovableObject* building : Buildings) {
+                window.draw(*building);
+            }
+            for (ImmovableObject* road : Roads) {
+                window.draw(*road);
+            }
+            for (ImmovableObject* crossing : Crossings) {
+                window.draw(*crossing);
+            }
+            // Cars drawing
+            for (MovableObject* car : Cars) {
+                window.draw(*car);
+
+            }
+
+            // end the current frame
+            window.display();
+
+        }
+        // Memory freeing
+        else { 
+            for (int i = 0; i < Buildings.size(); i++) {
+                delete Buildings[i];
+            }
+            for (int i = 0; i < Roads.size(); i++) {
+                delete Roads[i];
+            }
+            for (int i = 0; i < Crossings.size(); i++) {
+                delete Crossings[i];
+            }
+            for (int i = 0; i < Cars.size(); i++) {
+                delete Cars[i];
+            }
+            // Clearing vectors -> deleting pointers to nowhere
+            Buildings.clear();
+            Roads.clear();
+            Crossings.clear();
+            Cars.clear();
+
+            break;
+        }
+    }    
+}
+
+bool Manager::moveCars(int winXsize, int winYsize)
+{
+    bool anythingMoves = false;
+    if (!Cars.empty()) {
+        for (MovableObject* car : Cars) {
+        if (!car->isMapEnd(winXsize, winYsize)) {
+            car->moveObj();
+            anythingMoves = true;
+        }
+        else if (car->onCrossing()) {
+//                if (car->direction == -1) {
+//                    car->directionGenerate();
+//                }
+//              else if(car->crossingQueueCheck()){    <- sprawdza czy ju¿ mo¿e jechaæ
+//                      car->moveObj();
+//               }
+        }
+        else {
+
+        }
+        }
+    }
+    
+	return anythingMoves;
+}
+
+
 bool Manager::checkCollision()
 {
-	return false;
+    return false;
 }
 
 void Manager::generateMap()
@@ -21,6 +143,7 @@ void Manager::generateMap()
     generateRoads();
     generateCrossings();
     generateCars();
+    setOriginsCenter();
 }
 
 void Manager::generateBuildings()
@@ -28,9 +151,9 @@ void Manager::generateBuildings()
     sf::Vector2f makePoint(0.0, 0.0);
     //buildings generation;
 
-    for (int i = 0; i <= this->xCrossAmount; i++) 
+    for (int i = 0; i <= this->xCrossAmount; i++)
     {
-        for (int j = 0; j <= this->yCrossAmount; j++) 
+        for (int j = 0; j <= this->yCrossAmount; j++)
         {
             sf::Texture* buildingTexture = new sf::Texture();
             buildingTexture->loadFromFile("Building.png", sf::IntRect(0, 0, 128, 128));
@@ -49,12 +172,12 @@ void Manager::generateRoads()
     //makes all roads from left to right
     sf::Vector2f makePoint(0.0, 128.0);
 
-    for (int i = 0; i <= this->xCrossAmount; i++) 
+    for (int i = 0; i <= this->xCrossAmount; i++)
     {
-        for (int j = 0; j < this->yCrossAmount; j++) 
+        for (int j = 0; j < this->yCrossAmount; j++)
         {
             sf::Texture* roadTexture = new sf::Texture();
-            roadTexture->loadFromFile("RoadShort.png", sf::IntRect(0, 0, 128, 64));
+            roadTexture->loadFromFile("Road.png", sf::IntRect(0, 0, 128, 64));
             Roads.push_back(new Road(makePoint.x, makePoint.y, roadTexture));
             makePoint.y = makePoint.y + 128.f + 64.f;
         }
@@ -72,7 +195,7 @@ void Manager::generateRoads()
         for (int j = 0; j <= this->yCrossAmount; j++)
         {
             sf::Texture* roadTexture = new sf::Texture();
-            roadTexture->loadFromFile("RoadShort.png", sf::IntRect(0, 0, 128, 64));
+            roadTexture->loadFromFile("Road.png", sf::IntRect(0, 0, 128, 64));
             Roads.push_back(new Road(makePoint.x, makePoint.y, roadTexture));
             Roads.back()->setRotation(90);
             makePoint.y = makePoint.y + 128.f + 64.f;
@@ -103,92 +226,73 @@ void Manager::generateCrossings()
 
 }
 
-void Manager::generateCars()
+void Manager::generateCars() // File loaded cars handling remaining!
 {
+    if (fileLoaded) {
 
-}
-
-int Manager::RunApplication()
-{
-	// Map & Window size initializing
-    this->xCrossAmount = 5;
-    this->yCrossAmount = 4;
-    unsigned int windowXsize = this->xCrossAmount * (128 + 64) + 128,
-                 windowYsize = this->yCrossAmount * (128 + 64) + 128;
-    // Window initializing
-    sf::RenderWindow window(sf::VideoMode(windowXsize, windowYsize), "City Simulation");
-
-    generateMap();
-
-    while (window.isOpen())
-    {
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
-
-        
-        while (window.pollEvent(event))
+    }
+    else {
+        srand(time(0));
+        sf::Vector2f makePoint(0.0, 0.0);
+        //cars generation;
+        for (ImmovableObject* road : Roads)
         {
-            // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed) {
-                window.close();
-                throw(1);
+            sf::Texture* carTexture = new sf::Texture();
+            carTexture->loadFromFile("RedCar.png", sf::IntRect(0, 0, 32, 16));
+            int oppositeDir = rand() % 2;
+            if (road->getRotation() == 0 && oppositeDir == 0) {
+                makePoint.x = road->getPosition().x + 64;
+                makePoint.y = road->getPosition().y + 40;
             }
-            //OBS£UGA ESCAPE
+            else if (road->getRotation() == 0 && oppositeDir == 1) {
+                makePoint.x = road->getPosition().x + 64;
+                makePoint.y = road->getPosition().y + 24;
+            }
+            else if (road->getRotation() == 90 && oppositeDir == 0) {
+                makePoint.x = road->getPosition().x - 40;
+                makePoint.y = road->getPosition().y + 64;
+            }
+            else if (road->getRotation() == 90 && oppositeDir == 1) {
+                makePoint.x = road->getPosition().x - 24;
+                makePoint.y = road->getPosition().y + 64;
+            }
+            Cars.push_back(new Car(makePoint.x, makePoint.y, carTexture));
+            Cars.back()->setRotation(road->getRotation() + (oppositeDir * 180));
         }
-
-        // Cars movement logic function
-
-
-        // clear the window with white color
-        window.clear(sf::Color::White);
-
-        // Map Drawing
-        for (ImmovableObject* building : Buildings) {
-            window.draw(*building);
-        }
-        for (ImmovableObject* road : Roads) {
-            window.draw(*road);
-        }
-        for (ImmovableObject* crossing : Crossings) {
-            window.draw(*crossing);
-        }
-        // Cars drawing
-
-
-
-        // end the current frame
-        window.display();
     }
-    // Clearing vectors -> memory erasing
-    this->Buildings.clear();
-    this->Roads.clear();
-    this->Crossings.clear();
-    this->Cars.clear();
-	return 0;
 }
 
-bool Manager::moveCars()
+void Manager::setOriginsCenter()
 {
-    if (!Cars.empty()) {
-        for (MovableObject* car : Cars) {
-            if (car->isMapEnd(800,600)) {
-                delete car;
-                car = nullptr;
-            }
-            else if (car->onCrossing()) {
-//                if (car->direction == -1) {
-//                    car->directionGenerate();
-//                }
-//              else if(car->crossingQueueCheck()){    <- sprawdza czy ju¿ mo¿e jechaæ
-//                      car->moveObj();
-//               }
-            }
-            else {
-                car->moveObj();
-            }
-        }
-        std::remove(Cars.begin(), Cars.end(), nullptr);
+    for (ImmovableObject* crossing : Crossings) {
+        crossing->setOrigin(32.0f,32.0f);
+        
     }
-    
-	return false;
+    for (ImmovableObject* road : Roads) {
+
+    }
+    for (MovableObject* car : Cars) {
+        sf::Vector2f newPosition;
+        if (car->getRotation() == 0) {
+            car->setOrigin(16.0f, 8.0f);
+            newPosition.x = car->getPosition().x + 16;
+            newPosition.y = car->getPosition().y + 8;
+        }
+        else if (car->getRotation() == 90) {
+            car->setOrigin(-8.0f, 16.0f);
+            newPosition.x = car->getPosition().x - 8;
+            newPosition.y = car->getPosition().y + 16;
+        }
+        else if (car->getRotation() == 180) {
+            car->setOrigin(-16.0f, -8.0f);
+            newPosition.x = car->getPosition().x - 16;
+            newPosition.y = car->getPosition().y - 8;
+        }
+        else if (car->getRotation() == 270) {
+            car->setOrigin(8.0f, -16.0f);
+            newPosition.x = car->getPosition().x + 8;
+            newPosition.y = car->getPosition().y - 16;
+        }
+        car->rotate(1);
+    }
 }
