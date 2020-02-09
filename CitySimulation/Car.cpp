@@ -1,8 +1,9 @@
 #include "Car.h"
 
-Car::Car(float x, float y, sf::Texture* _texture) :
+Car::Car(float x, float y, ImmovableObject* _actualFloor, sf::Texture* _texture) :
     MovableObject(x, y, 32, 16 , ObjectType::CAR, _texture)
 {
+	this->actualFloor = _actualFloor;
 }
 
 Car::~Car() 
@@ -35,12 +36,51 @@ void Car::moveObj()
 
 bool Car::onCrossing()
 {
-    return false;
+	if (this->getRotation() == 0) {
+		if (this->actualFloor->getRight() != nullptr && this->getGlobalBounds().intersects(this->actualFloor->getRight()->getGlobalBounds())) {
+			return true;
+		}
+	}
+	else if (this->getRotation() == 90) {
+		if (this->actualFloor->getLower() != nullptr && this->getGlobalBounds().intersects(this->actualFloor->getLower()->getGlobalBounds())) {
+			return true;
+		}
+	}
+	else if (this->getRotation() == 180) {
+		if (this->actualFloor->getLeft() != nullptr && this->getGlobalBounds().intersects(this->actualFloor->getLeft()->getGlobalBounds())) {
+			return true;
+		}
+	}
+	else if (this->getRotation() == 270) {
+		if (this->actualFloor->getUpper() != nullptr && this->getGlobalBounds().intersects(this->actualFloor->getUpper()->getGlobalBounds())) {
+			return true;
+		}
+	}
+	return false;
 }
 
 int Car::directionGenerate()
 {
-    return 0;
+	srand(time(0));
+    return rand()%3;
+}
+
+ImmovableObject* Car::getActualFloor()
+{
+	return nullptr;
+}
+
+bool Car::isInCrossingQueue()
+{
+	return false;
+}
+
+void Car::setActualFloor(ImmovableObject* _actualFloor)
+{
+}
+
+void Car::setInCrossingQueue(bool _choice)
+{
 }
 
 bool Car::isMapEnd(int winSizeX, int winSizeY)

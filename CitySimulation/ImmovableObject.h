@@ -10,7 +10,7 @@
 * 
 */
 
-
+class MovableObject;
 
 class ImmovableObject :
 	public GraphicalObject

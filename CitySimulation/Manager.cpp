@@ -102,34 +102,33 @@ void Manager::RunApplication()
 
             break;
         }
-    }    
+    }
 }
 
 bool Manager::moveCars(int winXsize, int winYsize)
 {
-    bool anythingMoves = false;
+    bool anyCarsOnMap = false;
+
     if (!Cars.empty()) {
         for (MovableObject* car : Cars) {
             if (!car->isMapEnd(winXsize, winYsize)) {
                 
-                anythingMoves = true;
+                anyCarsOnMap = true;
 
-                if (car->onCrossing()) {
-                //                if (car->direction == -1) {
-                //                    car->directionGenerate();
-                //                }
-                //              else if(car->crossingQueueCheck()){    <- sprawdza czy ju¿ mo¿e jechaæ
-                //                      car->moveObj();
-                //               }
+                if (car->onCrossing() && !car->isInCrossingQueue()) {
+                    car->setInCrossingQueue(true);
+                    car->directionGenerate;
                 }
-                else {
-                    car->moveObj();
-                }
+
+
+
+
+                car->moveObj();
             }
         }
     }
     
-	return anythingMoves;
+	return anyCarsOnMap;
 }
 
 
@@ -262,7 +261,7 @@ void Manager::generateCars() // File loaded cars handling remaining!
                 makePoint.y = road->getPosition().y;
             }
 
-            Cars.push_back(new Car(makePoint.x, makePoint.y, carTexture));
+            Cars.push_back(new Car(makePoint.x, makePoint.y, road, carTexture));
             Cars.back()->setRotation(road->getRotation() + (oppositeDir * 180));
             Cars.back()->setOrigin(16.0f, 8.0f);
         }
