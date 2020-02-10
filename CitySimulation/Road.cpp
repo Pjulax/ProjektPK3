@@ -49,6 +49,10 @@ void Road::setLower(ImmovableObject* lower)
 {
 }
 
+void Road::setBusy(bool _inUse)
+{
+}
+
 ImmovableObject* Road::getNext()
 {
 	if (this->getRotation() == 0) {
@@ -87,4 +91,9 @@ ImmovableObject* Road::getUpper()
 ImmovableObject* Road::getLower()
 {
 	return this->lower;
+}
+
+bool Road::isBusy()
+{
+	return false;
 }

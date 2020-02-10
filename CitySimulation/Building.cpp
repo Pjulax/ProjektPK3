@@ -9,16 +9,6 @@ Building::~Building()
 {
 }
 
-bool Building::HasThisCar(GraphicalObject* queriedCar)
-{
-	return false;
-}
-
-bool Building::AddCar(GraphicalObject* Car)
-{
-	return false;
-}
-
 void Building::setNext(ImmovableObject* next)
 {
 }
@@ -40,6 +30,10 @@ void Building::setUpper(ImmovableObject* upper)
 }
 
 void Building::setLower(ImmovableObject* lower)
+{
+}
+
+void Building::setBusy(bool _inUse)
 {
 }
 
@@ -71,4 +65,9 @@ ImmovableObject* Building::getUpper()
 ImmovableObject* Building::getLower()
 {
 	return nullptr;
+}
+
+bool Building::isBusy()
+{
+	return false;
 }

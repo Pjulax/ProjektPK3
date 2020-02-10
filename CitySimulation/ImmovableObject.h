@@ -25,16 +25,18 @@ public:
 	virtual void setRight(ImmovableObject* right) = 0;
 	virtual void setUpper(ImmovableObject* upper) = 0;
 	virtual void setLower(ImmovableObject* lower) = 0;
+	virtual void setBusy(bool _inUse) = 0;
 	virtual ImmovableObject* getNext() = 0;
 	virtual ImmovableObject* getPrev() = 0;
 	virtual ImmovableObject* getLeft() = 0;
 	virtual ImmovableObject* getRight() = 0;
 	virtual ImmovableObject* getUpper() = 0;
 	virtual ImmovableObject* getLower() = 0;
-
+	virtual bool isBusy() = 0;
 protected:
 	ImmovableObject		*left,
 						*right,
 						*upper,
 						*lower;
+	bool busy;
 };

@@ -9,6 +9,7 @@
 //Classes implemented
 #include "GraphicalObject.h"
 #include "Car.h"
+#include "PrivilegedCar.h"
 #include "Building.h"
 #include "Road.h"
 #include "Crossing.h"
@@ -31,7 +32,6 @@ private:
 	int xCrossAmount = -1;
 	int yCrossAmount = -1;
 	bool fileLoaded = false;
-	bool checkCollision(); // checks collision on coordinates
 	void generateMap();
 	void generateBuildings();
 	void generateRoads();

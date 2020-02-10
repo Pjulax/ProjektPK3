@@ -14,13 +14,14 @@ public:
 	void setRight(ImmovableObject* right);
 	void setUpper(ImmovableObject* upper);
 	void setLower(ImmovableObject* lower);
+	void setBusy(bool _inUse);
 	ImmovableObject* getNext();
 	ImmovableObject* getPrev();
 	ImmovableObject* getLeft();
 	ImmovableObject* getRight();
 	ImmovableObject* getUpper();
 	ImmovableObject* getLower();
-
+	bool isBusy();
 private:
 
 };

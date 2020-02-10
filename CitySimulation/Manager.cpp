@@ -15,13 +15,13 @@ void Manager::RunApplication()
     // FILE LOADING - if exists!
 
 	// Map & Window size initializing
-    this->xCrossAmount = 2;
+    this->xCrossAmount = 3;
     this->yCrossAmount = 2;
     unsigned int windowXsize = this->xCrossAmount * (128 + 64) + 128,
                  windowYsize = this->yCrossAmount * (128 + 64) + 128;
     // Window initializing
     sf::RenderWindow window(sf::VideoMode(windowXsize, windowYsize), "City Simulation");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(120);
 
     generateMap();
 
@@ -53,7 +53,7 @@ void Manager::RunApplication()
         //    clock.restart();
         //}
 
-
+        // If move existed then map is drawed, else memory freeing and ending
         if (moveCars(windowXsize, windowYsize)) {
 
             // clear the window with white color
@@ -115,14 +115,119 @@ bool Manager::moveCars(int winXsize, int winYsize)
                 
                 anyCarsOnMap = true;
 
-                if (car->onCrossing() && !car->isInCrossingQueue()) {
+                if (!car->isMovingOnCrossing() && car->onCrossing() && !car->isInCrossingQueue()) {
                     car->setInCrossingQueue(true);
-                    car->directionGenerate;
+                    car->setRotationRemaining();
                 }
-
-
-
-
+                else if (car->isInCrossingQueue()) {
+                    bool isCarOnRight = false;
+                    if ((car->getRotation() == 0 || car->getRotation() == 90) && !car->getActualFloor()->getNext()->isBusy()) {
+                        if (car->getRotation() == 0) {
+                            // ------check on right -----------
+                            bool    isCarUpper = false,
+                                    isCarStraight = false;
+                            for (MovableObject* crossingCar : Cars) {
+                                if (crossingCar->getRotation() == 270) {
+                                    if (crossingCar->getGlobalBounds().intersects(car->getActualFloor()->getNext()->getLower()->getGlobalBounds())) {
+                                        if (crossingCar->onCrossing())
+                                            isCarOnRight = true;
+                                    }
+                                }
+                                if (crossingCar->getRotation() == 180) {
+                                    if (crossingCar->getGlobalBounds().intersects(car->getActualFloor()->getNext()->getRight()->getGlobalBounds())) {
+                                        if (crossingCar->onCrossing())
+                                            isCarStraight = true;
+                                    }
+                                }
+                                if (crossingCar->getRotation() == 90) {
+                                    if (crossingCar->getGlobalBounds().intersects(car->getActualFloor()->getNext()->getUpper()->getGlobalBounds())) {
+                                        if (crossingCar->onCrossing())
+                                            isCarUpper = true;
+                                    }
+                                }
+                            }
+                            // --------------------------------
+                            if (!isCarOnRight) {
+                                car->setMovingOnCrossing(true);
+                                car->getActualFloor()->getNext()->setBusy(true);
+                                car->setInCrossingQueue(false);
+                            }
+                            else if (isCarOnRight && isCarStraight && isCarUpper) {
+                                car->setMovingOnCrossing(true);
+                                car->getActualFloor()->getNext()->setBusy(true);
+                                car->setInCrossingQueue(false);
+                            }
+                        }
+                        else if (car->getRotation() == 90) {
+                            // ------check on right -----------
+                            for (MovableObject* crossingCar : Cars) {
+                                if (crossingCar->getRotation() == 0
+                                    && crossingCar->getGlobalBounds().intersects(car->getActualFloor()->getNext()->getLeft()->getGlobalBounds())
+                                    && crossingCar->onCrossing()) {
+                                    isCarOnRight = true;
+                                }
+                            }
+                            // --------------------------------
+                            if (!isCarOnRight) {
+                                car->setMovingOnCrossing(true);
+                                car->getActualFloor()->getNext()->setBusy(true);
+                                car->setInCrossingQueue(false);
+                            }
+                        }
+                    }
+                    else if ((car->getRotation() == 180 || car->getRotation() == 270) && !car->getActualFloor()->getPrev()->isBusy()) {
+                        if (car->getRotation() == 180) {
+                            // ------check on right -----------
+                            for (MovableObject* crossingCar : Cars) {
+                                if (crossingCar->getRotation() == 90
+                                    && crossingCar->getGlobalBounds().intersects(car->getActualFloor()->getPrev()->getUpper()->getGlobalBounds())
+                                    && crossingCar->onCrossing()) {
+                                    isCarOnRight = true;
+                                }
+                            }
+                            // --------------------------------
+                            if (!isCarOnRight) {
+                                car->setMovingOnCrossing(true);
+                                car->getActualFloor()->getPrev()->setBusy(true);
+                                car->setInCrossingQueue(false);
+                            }
+                        }
+                        else if (car->getRotation() == 270) {
+                            // ------check on right -----------
+                            for (MovableObject* crossingCar : Cars) {
+                                if (crossingCar->getRotation() == 180
+                                    && crossingCar->getGlobalBounds().intersects(car->getActualFloor()->getPrev()->getRight()->getGlobalBounds())
+                                    && crossingCar->onCrossing()) {
+                                    isCarOnRight = true;
+                                }
+                            }
+                            // --------------------------------
+                            if (!isCarOnRight) {
+                                car->setMovingOnCrossing(true);
+                                car->getActualFloor()->getPrev()->setBusy(true);
+                                car->setInCrossingQueue(false);
+                            }
+                        }
+                    }
+                }
+                else  {
+                    for (MovableObject* otherCar : Cars) {
+                        if (car != otherCar && car->getRotation() == otherCar->getRotation()) {
+                            if (car->getRotation() == 0 && car->getActualFloor()->getNext() != nullptr && abs(car->getPosition().y - otherCar->getPosition().y) < 5 && (otherCar->getPosition().x - car->getPosition().x) == 36) {
+                                car->setCollisionAlert(true);
+                            }
+                            else if (car->getRotation() == 90 && car->getActualFloor()->getNext() != nullptr && abs(car->getPosition().x - otherCar->getPosition().x) < 5 && (otherCar->getPosition().y - car->getPosition().y) == 36) {
+                                car->setCollisionAlert(true);
+                            }
+                            else if (car->getRotation() == 180 && car->getActualFloor()->getPrev() != nullptr && abs(car->getPosition().y - otherCar->getPosition().y) < 5 && (car->getPosition().x - otherCar->getPosition().x) == 36) {
+                                car->setCollisionAlert(true);
+                            }
+                            else if (car->getRotation() == 270 && car->getActualFloor()->getPrev() != nullptr && abs(car->getPosition().x - otherCar->getPosition().x) < 5 && (car->getPosition().y - otherCar->getPosition().y) == 36) {
+                                car->setCollisionAlert(true);
+                            }
+                        }
+                    }
+                }
                 car->moveObj();
             }
         }
@@ -131,11 +236,6 @@ bool Manager::moveCars(int winXsize, int winYsize)
 	return anyCarsOnMap;
 }
 
-
-bool Manager::checkCollision()
-{
-    return false;
-}
 
 void Manager::generateMap()
 {
@@ -241,7 +341,13 @@ void Manager::generateCars() // File loaded cars handling remaining!
         for (ImmovableObject* road : Roads)
         {
             sf::Texture* carTexture = new sf::Texture();
-            carTexture->loadFromFile("RedCar.png", sf::IntRect(0, 0, 32, 16));
+            int fastCar = rand() % 2;
+            if (fastCar == 0) {
+                carTexture->loadFromFile("RedCar.png", sf::IntRect(0, 0, 32, 16));
+            }
+            else {
+                carTexture->loadFromFile("FastCar.png", sf::IntRect(0, 0, 32, 16));
+            }
             int oppositeDir = rand() % 2;
 
             if (road->getRotation() == 0 && oppositeDir == 0) { // rotation = 0
@@ -260,8 +366,12 @@ void Manager::generateCars() // File loaded cars handling remaining!
                 makePoint.x = road->getPosition().x + 16;
                 makePoint.y = road->getPosition().y;
             }
-
-            Cars.push_back(new Car(makePoint.x, makePoint.y, road, carTexture));
+            if (fastCar == 0) {
+                Cars.push_back(new Car(makePoint.x, makePoint.y, road, carTexture, 1.0f));
+            }
+            else {
+                Cars.push_back(new PrivilegedCar(makePoint.x, makePoint.y, road, carTexture, 2.0f));
+            }
             Cars.back()->setRotation(road->getRotation() + (oppositeDir * 180));
             Cars.back()->setOrigin(16.0f, 8.0f);
         }
@@ -271,13 +381,13 @@ void Manager::generateCars() // File loaded cars handling remaining!
 void Manager::linkingRoads()
 {
     sf::Vector2f roadCenter(0.0f,0.0f);
-
+    int i = 0;
     for (ImmovableObject* road : Roads) {
         roadCenter.x = road->getPosition().x;
         roadCenter.y = road->getPosition().y;
-        
+        std::cout << "Linking road no."<< i << " with x=" << roadCenter.x << " and y= " << roadCenter.y << std::endl;
         for (ImmovableObject* crossing : Crossings) {
-            if (roadCenter.y == crossing->getPosition().y) {
+            if (roadCenter.y == crossing->getPosition().y) { // poziomo ustawione
                 if (crossing->getPosition().x - roadCenter.x == 96) {
                     road->setNext(crossing);
                     crossing->setLeft(road);
@@ -289,8 +399,8 @@ void Manager::linkingRoads()
                     std::cout << "Road saves left crossing" << std::endl;
                 }
             }
-            else if (roadCenter.x == crossing->getPosition().x) {
-                if (crossing->getPosition().y - roadCenter.y == 96) {
+            else if (roadCenter.x == crossing->getPosition().x) { // pionowo ustawione
+                if (roadCenter.y - crossing->getPosition().y == -96) {
                     road->setNext(crossing);
                     crossing->setUpper(road);
                     std::cout << "Road saves lower crossing" << std::endl;

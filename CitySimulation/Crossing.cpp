@@ -11,16 +11,6 @@ Crossing::~Crossing()
 {
 }
 
-bool Crossing::HasThisCar(GraphicalObject* queriedCar)
-{
-	return false;
-}
-
-bool Crossing::AddCar(GraphicalObject* Car)
-{
-	return false;
-}
-
 void Crossing::setNext(ImmovableObject* next)
 {
 }
@@ -47,6 +37,11 @@ void Crossing::setUpper(ImmovableObject* upper)
 void Crossing::setLower(ImmovableObject* lower)
 {
 	this->lower = lower;
+}
+
+void Crossing::setBusy(bool _inUse)
+{
+	this->busy = _inUse;
 }
 
 ImmovableObject* Crossing::getNext()
@@ -77,4 +72,9 @@ ImmovableObject* Crossing::getUpper()
 ImmovableObject* Crossing::getLower()
 {
 	return this->lower;
+}
+
+bool Crossing::isBusy()
+{
+	return this->busy;
 }
