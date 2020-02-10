@@ -449,8 +449,8 @@ void Car::setRotationRemaining()
 
 bool Car::isMapEnd(int winSizeX, int winSizeY)
 {
-	if (this->getPosition().x == -16 || this->getPosition().x == winSizeX + 16
-		|| this->getPosition().y == -16 || this->getPosition().y == winSizeY + 16)
+	if (this->getPosition().x <= -16 || this->getPosition().x >= winSizeX + 16
+		|| this->getPosition().y <= -16 || this->getPosition().y >= winSizeY + 16)
 		return true;
 	else
 		return false;

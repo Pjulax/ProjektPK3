@@ -21,7 +21,7 @@ void Manager::RunApplication()
                  windowYsize = this->yCrossAmount * (128 + 64) + 128;
     // Window initializing
     sf::RenderWindow window(sf::VideoMode(windowXsize, windowYsize), "City Simulation");
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(30);
 
     generateMap();
 
@@ -37,7 +37,7 @@ void Manager::RunApplication()
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed) {
                 window.close();
-                throw(1);
+				break;
             }
             //OBS£UGA ESCAPE
         }
@@ -82,27 +82,29 @@ void Manager::RunApplication()
         }
         // Memory freeing
         else { 
-            for (int i = 0; i < Buildings.size(); i++) {
-                delete Buildings[i];
-            }
-            for (int i = 0; i < Roads.size(); i++) {
-                delete Roads[i];
-            }
-            for (int i = 0; i < Crossings.size(); i++) {
-                delete Crossings[i];
-            }
-            for (int i = 0; i < Cars.size(); i++) {
-                delete Cars[i];
-            }
-            // Clearing vectors -> deleting pointers to nowhere
-            Buildings.clear();
-            Roads.clear();
-            Crossings.clear();
-            Cars.clear();
+            
 
             break;
         }
     }
+	for (int i = 0; i < Buildings.size(); i++) {
+		delete Buildings[i];
+	}
+	for (int i = 0; i < Roads.size(); i++) {
+		delete Roads[i];
+	}
+	for (int i = 0; i < Crossings.size(); i++) {
+		delete Crossings[i];
+	}
+	for (int i = 0; i < Cars.size(); i++) {
+		delete Cars[i];
+	}
+	// Clearing vectors -> deleting pointers to nowhere
+	Buildings.clear();
+	Roads.clear();
+	Crossings.clear();
+	Cars.clear();
+	throw(1);
 }
 
 bool Manager::moveCars(int winXsize, int winYsize)
@@ -114,6 +116,7 @@ bool Manager::moveCars(int winXsize, int winYsize)
             if (!car->isMapEnd(winXsize, winYsize)) {
                 
                 anyCarsOnMap = true;
+
 
                 if (!car->isMovingOnCrossing() && car->onCrossing() && !car->isInCrossingQueue()) {
                     car->setInCrossingQueue(true);
@@ -212,17 +215,33 @@ bool Manager::moveCars(int winXsize, int winYsize)
                 }
                 else  {
                     for (MovableObject* otherCar : Cars) {
-                        if (car != otherCar && car->getRotation() == otherCar->getRotation()) {
-                            if (car->getRotation() == 0 && car->getActualFloor()->getNext() != nullptr && abs(car->getPosition().y - otherCar->getPosition().y) < 5 && (otherCar->getPosition().x - car->getPosition().x) == 36) {
+                        if (car != otherCar) {
+                            if (car->getRotation() == 0 
+								&& winXsize - car->getPosition().x > 32
+								&& abs(car->getPosition().y - otherCar->getPosition().y) < 5 
+								&& (otherCar->getPosition().x - car->getPosition().x) <= 38 
+								&& (otherCar->getPosition().x - car->getPosition().x) > 0) {
                                 car->setCollisionAlert(true);
                             }
-                            else if (car->getRotation() == 90 && car->getActualFloor()->getNext() != nullptr && abs(car->getPosition().x - otherCar->getPosition().x) < 5 && (otherCar->getPosition().y - car->getPosition().y) == 36) {
+                            else if (car->getRotation() == 90 
+								&& winYsize - car->getPosition().y > 32
+								&& abs(car->getPosition().x - otherCar->getPosition().x) < 5 
+								&& (otherCar->getPosition().y - car->getPosition().y) <= 38 
+								&& (otherCar->getPosition().y - car->getPosition().y) > 0) {
                                 car->setCollisionAlert(true);
                             }
-                            else if (car->getRotation() == 180 && car->getActualFloor()->getPrev() != nullptr && abs(car->getPosition().y - otherCar->getPosition().y) < 5 && (car->getPosition().x - otherCar->getPosition().x) == 36) {
+                            else if (car->getRotation() == 180 
+								&& car->getPosition().x > 32
+								&& abs(car->getPosition().y - otherCar->getPosition().y) < 5 
+								&& (car->getPosition().x - otherCar->getPosition().x) <= 38
+								&& (car->getPosition().x - otherCar->getPosition().x) > 0){
                                 car->setCollisionAlert(true);
                             }
-                            else if (car->getRotation() == 270 && car->getActualFloor()->getPrev() != nullptr && abs(car->getPosition().x - otherCar->getPosition().x) < 5 && (car->getPosition().y - otherCar->getPosition().y) == 36) {
+                            else if (car->getRotation() == 270 
+								&& car->getPosition().y > 32
+								&& abs(car->getPosition().x - otherCar->getPosition().x) < 5 
+								&& (car->getPosition().y - otherCar->getPosition().y) <= 38
+								&& (car->getPosition().y - otherCar->getPosition().y) > 0) {
                                 car->setCollisionAlert(true);
                             }
                         }
