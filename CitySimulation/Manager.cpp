@@ -30,6 +30,7 @@ void Manager::RunApplication()
        
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
+		sf::Keyboard keyboard;
 
         
         while (window.pollEvent(event))
@@ -39,19 +40,12 @@ void Manager::RunApplication()
                 window.close();
 				break;
             }
+			if (keyboard.isKeyPressed(sf::Keyboard::Escape)) {
+				window.close();
+				break;
+			}
             //OBS£UGA ESCAPE
         }
-
-        // Cars movement logic function
-        
-
-        //TIME HANDLING
-
-        //sf::Clock clock;
-        //sf::Time time = clock.getElapsedTime();
-        //if (time.asMilliseconds() > 200) {
-        //    clock.restart();
-        //}
 
         // If move existed then map is drawed, else memory freeing and ending
         if (moveCars(windowXsize, windowYsize)) {
@@ -82,8 +76,7 @@ void Manager::RunApplication()
         }
         // Memory freeing
         else { 
-            
-
+			window.close();
             break;
         }
     }
